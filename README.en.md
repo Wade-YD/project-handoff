@@ -12,13 +12,15 @@ A Skill for AI coding agents (Claude Code / ZCode / Codex / OpenCode, etc.): **s
 
 ## Three layers
 
+> ⚠️ **All three files live in the project root — not in a user-level directory.** `AGENTS.md` here always means `<repo-root>/AGENTS.md` (**project-level**, travels with the repo), **not** `~/.zcode/AGENTS.md` / `~/.claude/CLAUDE.md` (global personal preferences) — polluting the global file with project-specific content affects every session.
+
 | Layer | File | Size cap | Loaded | Content |
 |---|---|---|---|---|
-| Resident entry | `AGENTS.md` | **150 lines** (start at 20-30) | auto-loaded by the agent | what every task needs |
-| Architecture | `docs/ARCHITECTURE.md` | uncapped | via pointer in AGENTS.md, on demand | one-time understanding |
-| Session state | `HANDOFF.md` | 30-60 lines | **required reading at session start** | what changes daily |
+| Resident entry | **`<repo-root>/AGENTS.md`** (project-level) | **150 lines** (start at 20-30) | auto-loaded by the agent | what every task needs |
+| Architecture | `<repo-root>/docs/ARCHITECTURE.md` | uncapped | via pointer in the project AGENTS.md, on demand | one-time understanding |
+| Session state | `<repo-root>/HANDOFF.md` | 30-60 lines | **required reading at session start** | what changes daily |
 
-Key idea: `AGENTS.md` holds only what every task needs; architecture details hang off a pointer in the lazy layer; session state lives in one file that is **rolled over in place — never dated copies**, which is exactly how naming sprawl happens.
+Key idea: the project `AGENTS.md` holds only what every task needs (global preferences already live in `~/.zcode/AGENTS.md` — **don't restate them**, agents stack both); architecture details hang off a pointer in the lazy layer; session state lives in one file that is **rolled over in place — never dated copies**, which is exactly how naming sprawl happens.
 
 ## Four actions
 
