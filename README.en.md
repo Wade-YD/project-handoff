@@ -22,6 +22,8 @@ A Skill for AI coding agents (Claude Code / ZCode / Codex / OpenCode, etc.): **s
 
 Key idea: the project `AGENTS.md` holds only what every task needs (global preferences already live in `~/.zcode/AGENTS.md` — **don't restate them**, agents stack both); architecture details hang off a pointer in the lazy layer; session state lives in one file that is **rolled over in place — never dated copies**, which is exactly how naming sprawl happens.
 
+> Additionally `docs/backlog.md` — **created on demand, not part of the three layers** (audit findings land there instead of living only in session memory).
+
 ## Four actions
 
 | Action | Trigger phrase | What it does |
@@ -36,8 +38,12 @@ Key idea: the project `AGENTS.md` holds only what every task needs (global prefe
 - **Discoverability test**: if the agent can find it by reading code, don't write it — directory trees, tech-stack lists, and data-model summaries are all banned
 - **Positive rules, not prohibitions** (naming a deprecated API makes models more likely to use it) — except dead-end records in HANDOFF, which must be named
 - **150 lines is a ceiling**: instruction-following decays with volume; every line competes with the real task
-- **Every gotcha cites `file:line`**: no citation, no gotcha; `UNVERIFIED` must carry a verification path
+- **Every gotcha cites `file:line` — and the citation must be re-read**: a right line number with the wrong description is worse than no citation
 - **Run `git status` before finishing a handoff**: a confident, wrong handoff written from chat memory is worse than none
+- **Defects must not live only in session memory**: audit/bootstrap findings go to `docs/backlog.md` (**created on demand**, not a fourth layer), source is mandatory
+- **Gates get recorded and executed**: if there are no tests, write `Test: none + manual acceptance command` and log the gap in backlog — **never force the agent to invent a test framework**
+
+> Note: `docs/backlog.md` is created on demand and is not part of the three layers — only build it when there are real findings.
 
 ## Install
 
