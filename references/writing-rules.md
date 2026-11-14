@@ -42,7 +42,7 @@ agent 读代码能自己发现的就别写。**目录树、技术栈、数据模
 
 实测：`skm/HANDOFF.md` 55 行、`sticky-memo/HANDOFF.md` 62 行才装得下真实状态。50 行会砍掉实质内容。统一为 **60 行、`wc -l` 计（含空行）**——不写度量方式，两个人永远吵不出结论。
 
-超限时按序砍：① 与 AGENTS.md 重复的 Pointers ② Open Questions（迁 backlog）③ Intent & Goal 压成一句 ④ What We Tried 只留死路。**State of Play 的核实事实、Learnings、Next Steps 第一条不砍。**
+超限砍序的权威版本在 `templates.md` §三「四条硬规则」第 4 条——此处不复述操作细节，防两处漂移。
 
 ## 为什么缺陷要独立放 `docs/backlog.md`（而不是 HANDOFF 的一节）
 
@@ -85,3 +85,7 @@ HANDOFF 的语义是**滚动覆写**——每次会话重写。缺陷往往跨�
 `make atlas-check`：自动生成的部分进 CI 校验，人工部分靠 review。值得借鉴思路，但不必上 10 份文档。
 
 没有 CI 时的替代：HANDOFF 的「最后核实」日期早于最近一次 commit 即视为过期。
+
+## 既有命名优先 —— 命名冲突的代价账
+
+skill 默认名是 `HANDOFF.md`，但很多生态已有别的惯例（工作区 AGENTS.md 规定 `HANDOVER.md`、团队用 `交接文档.md`）。强行改名 = 与已加载的上级规则打架：两条矛盾规则会同时进上下文，每次会话都要重新仲裁。统一命名的收益是「一个入口」，这个收益不依赖具体名字——所以规则正文在 SKILL.md 动作 A 第 0 步，名字听既有约定的。

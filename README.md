@@ -2,7 +2,7 @@
 
 [English](README.en.md) | **简体中文**
 
-一个给 AI 编程 agent（Claude Code / ZCode / Codex / OpenCode 等）用的 Skill：**新开会话只给一个项目路径，agent 就能快速上手**——把散落在各处的 `HANDOFF.md` / `HANDOVER.md` / `交接文档.md` 收敛成一套三层文档结构，并自带建档、交接、验收、旧文档迁移四个动作。
+一个给 AI 编程 agent（Claude Code / ZCode / Codex / OpenCode 等）用的 Skill：**新开会话只给一个项目路径，agent 就能快速上手**——把散落在各处的 `HANDOFF.md` / `HANDOVER.md` / `交接文档.md` 收敛成一套三层文档结构，并自带恢复、建档、交接、验收、旧文档迁移五个动作。
 
 ## 解决什么问题
 
@@ -18,18 +18,19 @@
 |---|---|---|---|---|
 | 常驻入口 | **`<仓库根>/AGENTS.md`**（项目级） | **150 行**（20-30 行起步） | agent 自动加载 | 每个任务都要用的 |
 | 架构 | `<仓库根>/docs/ARCHITECTURE.md` | 不设硬限 | 项目 AGENTS.md 指针引出，按需读 | 一次性摸清的 |
-| 会话状态 | `<仓库根>/HANDOFF.md` | 30-60 行 | **开工必读**，由项目 AGENTS.md 首节引出 | 天天变的 |
+| 会话状态 | `<仓库根>/HANDOFF.md` | ≤60 行（30 起步，`wc -l` 计） | **开工必读**，由项目 AGENTS.md 首节引出 | 天天变的 |
 
 关键机制：项目 `AGENTS.md` 只放「每任务都要用」的东西（全局偏好已在 `~/.zcode/AGENTS.md`，**别复述**——ZCode 会把两者叠加注入）；架构细节用指针挂到懒加载层；会话状态单独一个文件**滚动覆写，不新开日期文件**——否则会重演多套命名散落的问题。
 
 > 另有 `docs/backlog.md`——**按需创建的挂账文件，不属于三层**（审查发现的缺陷落这里，避免只在会话记忆里存活）。
 
-## 四种动作
+## 动作
 
 | 动作 | 触发说法 | 做什么 |
 |---|---|---|
+| **0 恢复** | 「继续上次的活 / 上次做到哪了」 | 读 `HANDOFF.md` → `git status --short --branch` 核对 → 按 Next Steps 继续；无 `HANDOFF.md` 先问用户要不要建档，**不擅自全量建档** |
 | **A 建档** | 「给这个项目建档」 | 先盘点已有文档（**逐节 merge，禁止覆盖**）→ 真跑 build/test → 写三层文档 → 过冷启动测试 |
-| **B 写 handoff** | 「写个 handoff / 会话要结束了」 | 先跑 `git status` 对仓库核实 → 6 段覆写 `HANDOFF.md` |
+| **B 写 handoff** | 「写个 handoff / 会话要结束了」 | 先跑 `git status` 对仓库核实 → 按 templates §三骨架（TL;DR 头 + 7 节）覆写 `HANDOFF.md` |
 | **C 冷启动测试** | 建档后必跑 | **新开会话或派子智能体**，只给路径不给提示，回答 5 个上手问题；答不上 = 文档没写完 |
 | **D 迁移旧文档** | 「把交接文档规范化」 | 按内容分流（进度→HANDOFF / 架构→ARCHITECTURE / 设计说明→DESIGN.md / 流水账→只抽结论），**先顺着链头指针读完最新状态再压** |
 
@@ -51,10 +52,10 @@
 # 方式一：skills CLI
 npx skills add <owner>/project-handoff
 
-# 方式二：手动复制（通用）
+# 方式二：手动复制（只列实测/通用路径，其余工具用方式一）
 git clone https://github.com/<owner>/project-handoff.git
-cp -r project-handoff ~/.agents/skills/     # ZCode / OpenCode
-# 或 cp -r project-handoff ~/.claude/skills/  # Claude Code
+cp -r project-handoff ~/.zcode/skills/      # ZCode（实测路径）
+cp -r project-handoff ~/.claude/skills/     # Claude Code
 ```
 
 ## 使用
@@ -75,10 +76,12 @@ cp -r project-handoff ~/.agents/skills/     # ZCode / OpenCode
 
 | 工具 | 加载规则 | 对建档的影响 |
 |---|---|---|
-| ZCode | 从 cwd 向上找**最近一个**，到最近含 `.git` 的祖先为止，不合并父级 | git 子项目读不到父级规则；**给非 git 目录建档会切断父级规则**（如有 `.bak` 回滚约定需一并复制进新文件） |
+| ZCode | 从 cwd **本层起**逐级向上查，**命中即停**；边界为最近含 `.git` 的祖先（该层本身也查），**无 `.git` 祖先则查到文件系统根**；不合并父级 | git 子项目读不到父级规则；**给非 git 目录建档会切断父级规则**（如有 `.bak` 回滚约定需一并复制进新文件） |
 | Claude Code | root → cwd **全部拼接**；2.1.277 起支持 AGENTS.md（无 CLAUDE.md 时兜底） | 单文件建议 <200 行 |
 | Codex | 逐级向下拼接，合计上限 **32 KiB** | 各层文件要控制总量 |
 | OpenCode | AGENTS.md 优先；`opencode.json` 的 `instructions` 可外挂任意 md | 唯一支持外挂 HANDOFF 的 |
+
+> 上表随版本漂移：ZCode 行已对照 ZCode 随附加载器源码核实（2026-11）；Claude Code / Codex / OpenCode 三行未逐一核实，以各工具官方文档为准。
 
 ## 实战验证
 

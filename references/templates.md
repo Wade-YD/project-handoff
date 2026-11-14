@@ -1,6 +1,6 @@
 # 三层文件 + 一份按需挂账的可抄模板
 
-> **三层必建**（`AGENTS.md` / `docs/ARCHITECTURE.md` / `HANDOFF.md`）**+ 一份按需**（`docs/backlog.md`，只有真实发现时才建）。都落**项目根目录**。本文的 `AGENTS.md` 一律指 `<仓库根>/AGENTS.md`（项目级），**不是** `~/.zcode/AGENTS.md`（全局个人偏好）。
+> **三层必建**（`AGENTS.md` / `docs/ARCHITECTURE.md` / `HANDOFF.md`）**+ 一份按需**（`docs/backlog.md`，只有真实发现时才建）。`AGENTS.md`、`HANDOFF.md` 落仓库根，其余落 `docs/`。本文的 `AGENTS.md` 一律指 `<仓库根>/AGENTS.md`（项目级），**不是** `~/.zcode/AGENTS.md`（全局个人偏好）。
 
 ## 一、`<仓库根>/AGENTS.md`（项目级常驻入口，≤150 行）
 
@@ -99,19 +99,21 @@ rg -n "<组件名>" --glob '!**/*.md' --glob '!**/*.test.*'
 
 ---
 
-## 三、`HANDOFF.md`（会话状态，每次覆写）
+## 三、`HANDOFF.md`（会话状态，每次覆写；**≤60 行**，`wc -l` 计含空行，30 行起步）
+
+> 文件名随项目既有约定（`HANDOVER.md` 等，见 SKILL.md 动作 A 第 0 步「既有命名优先」）；本节统一以 `HANDOFF.md` 指代，落盘时全局替换为项目实际名。
 
 ```markdown
 # HANDOFF
 
-**最后核实:** <YYYY-MM-DD> · 分支 `<branch>`（用 `date +%F` 取当天，不许手填；早于最近一次 commit 即视为过期）
+**最后核实:** <YYYY-MM-DD> · 分支 `<branch>`（用 `date +%F` 取当天，pwsh 用 `Get-Date -Format yyyy-MM-dd`，不许手填；早于最近一次 commit 即视为过期）
 
 **TL;DR:** <1-3 句：这是什么、到哪一步、唯一的下一步动作>
 
 ## Intent & Goal
 <为什么做、终态是什么、验收标准（最好是那条要通过的命令或测试）>
 
-## State of Play（已对 git 核实）
+## State of Play（已对 git 核实；无 git 项目：已对最近改动文件清单核实）
 - Branch: `<branch>`
 - Committed: <已提交的改动>
 - Uncommitted: <未提交的改动，或「无」>
@@ -145,13 +147,13 @@ rg -n "<组件名>" --glob '!**/*.md' --glob '!**/*.test.*'
 1. 写完前必须跑过 `git status --short --branch`。**基于聊天记录写的、自信但错误的 handoff，比没有更糟。**
 2. **禁止写密钥、token、连接串、账号**——HANDOFF 要进 git；只写 `.env.local` 里的键名。
 3. **活干完就退役**：目标达成后压成 5 行（结论 + 唯一遗留项）或删除，不保留已完成的历史交接——否则它迟早退化成第二份流水账。
-4. **缺陷不进本文件**：审查/建档发现的问题落 `docs/backlog.md`；HANDOFF 只留一行指针，Next Steps 被某条阻塞时引它。**超 60 行时**，Open Questions 也迁到 backlog 的「待确认」区。
+4. **缺陷不进本文件**：审查/建档发现的问题落 `docs/backlog.md`；HANDOFF 只留一行指针，Next Steps 被某条阻塞时引它。**超 60 行（`wc -l` 计）按序砍**：① 与 AGENTS.md 重复的 Pointers ② Open Questions（迁 backlog「待确认」区）③ Intent & Goal 压成一句 ④ What We Tried 只留死路与原因——**State of Play 的核实事实、Learnings、Next Steps 第一条不砍**。
 
 ---
 
 ## 四、`docs/HANDOFF-TEMPLATE.md`
 
-把上面第三份原样复制进去。建档时必须创建它——项目自带模板才能跨会话稳定，不依赖 skill 是否被加载。
+把上面第三份的 fenced markdown 块原样复制进去（「四条硬规则」是行为约束，留在本 skill 与项目 AGENTS.md 的「收工前」节，不进模板文件）。建档时必须创建它——项目自带模板才能跨会话稳定，不依赖 skill 是否被加载。
 
 ---
 
