@@ -51,10 +51,11 @@ Key idea: the project `AGENTS.md` holds only what every task needs (global prefe
 # Option 1: skills CLI
 npx skills add <owner>/project-handoff
 
-# Option 2: manual copy (universal)
+# Option 2: manual copy (pick the path for your tool)
 git clone https://github.com/<owner>/project-handoff.git
-cp -r project-handoff ~/.claude/skills/      # Claude Code
-# or cp -r project-handoff ~/.agents/skills/  # ZCode / OpenCode
+cp -r project-handoff ~/.agents/skills/     # ZCode + OpenCode (both read this shared library)
+cp -r project-handoff ~/.zcode/skills/      # ZCode only (optional; takes precedence over ~/.agents)
+cp -r project-handoff ~/.claude/skills/     # Claude Code
 ```
 
 ## Usage
