@@ -52,9 +52,10 @@
 # 方式一：skills CLI
 npx skills add <owner>/project-handoff
 
-# 方式二：手动复制（只列实测/通用路径，其余工具用方式一）
+# 方式二：手动复制（路径按工具选一个即可）
 git clone https://github.com/<owner>/project-handoff.git
-cp -r project-handoff ~/.zcode/skills/      # ZCode（实测路径）
+cp -r project-handoff ~/.agents/skills/     # ZCode + OpenCode（两者都读这个共享库）
+cp -r project-handoff ~/.zcode/skills/      # ZCode 专属（可选；此路径优先级高于 ~/.agents）
 cp -r project-handoff ~/.claude/skills/     # Claude Code
 ```
 
